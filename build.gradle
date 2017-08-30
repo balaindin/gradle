@@ -1,11 +1,19 @@
-task hello << {
-	print 'tutorialspoint'
-}
-
-task hello1 {
+task hello {
 	doLast {
 		print 'tutorialspoint'
 	}
+}
+
+task hello1 << {
+	print 'tutorialspoint'
+}
+
+task (hello2) << {
+	print 'tutorialspoint'
+}
+
+task ('hello3') << {
+	print 'tutorialspoint'
 }
 
 task upper << {
@@ -38,4 +46,72 @@ task getSet << {
 	getProject().setBuildDir('target')
 
 	println getProject().getBuildDir()
+}
+
+task taskX << {
+	println 'taskX'
+}
+
+task taskY (dependsOn: taskX) << {
+	println 'taskY'
+}
+
+
+
+
+task taskA << {
+	println 'taskA'
+}
+
+task taskB << {
+	println 'taskB'
+}
+taskB.dependsOn taskA
+
+
+
+task taskX1 << {
+   println 'taskX1'
+}
+taskX1.dependsOn {
+   tasks.findAll { 
+      task ->task.name.startsWith('lib') 
+   }
+}
+task lib1 << {
+   println 'lib1'
+}
+task lib2 << {
+   println 'lib2'
+}
+task notALib << {
+   println 'notALib'
+}
+
+
+
+task copy(type: Copy) {
+   description 'Copies the resource directory to the target directory.'
+   //from 'resources'
+   //into 'target'
+   //include('**/*.txt', '**/*.xml', '**/*.properties')
+   println("description applied")
+}
+
+
+
+task eclipse << {
+   println 'Hello Eclipse'
+}
+
+// #1st approach - closure returning true, if the task should be executed, false if not.
+eclipse.onlyIf {
+   project.hasProperty('usingEclipse')
+}
+
+// #2nd approach - alternatively throw an StopExecutionException() like this
+eclipse.doFirst {
+   if(!usingEclipse) {
+      throw new StopExecutionException()
+   }
 }
